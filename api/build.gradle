@@ -1,0 +1,22 @@
+plugins {
+    id 'application'
+}
+
+dependencies {
+    implementation project(':core')
+    implementation project(':infra')
+}
+
+application {
+    mainClass = 'com.acme.ecommerce.user.api.UserServiceApiApplication'
+}
+
+// Only api module produces bootJar
+bootJar {
+    enabled = true
+    mainClass = 'com.acme.ecommerce.user.api.UserServiceApiApplication'
+}
+
+jar {
+    enabled = false
+}
