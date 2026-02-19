@@ -17,6 +17,10 @@ bootJar {
     mainClass = 'com.acme.ecommerce.user.api.UserServiceApiApplication'
 }
 
+bootRun {
+    workingDir = rootProject.projectDir
+}
+
 jar {
     enabled = false
 }

@@ -119,7 +119,33 @@ public class UserRoleServiceImpl implements UserRoleService {
     @Transactional
     public Either<ErrorCode, Void> deleteRole(String roleCode) {
         try {
-            log.info("deleteRole start, roleCode: [{}]", roleCode);
+            log.info("deleteRole (soft) start, roleCode: [{}]", roleCode);
+
+            var roleOpt = userRoleRepository.findByRoleCode(roleCode);
+            if (roleOpt.isEmpty()) {
+                log.warn("Role not found: [roleCode: {}]", roleCode);
+                return Either.left(ErrorCode.ROLE_NOT_FOUND);
+            }
+
+            var role = roleOpt.get();
+            role.setStatus(false);
+            userRoleRepository.save(role);
+            log.info("deleteRole (soft) success, roleCode: [{}]", roleCode);
+
+            return Either.right(null);
+        } catch (Exception e) {
+            log.error("deleteRole exception: [{}]", e.getMessage(), e);
+            return Either.left(ErrorCode.SERVER_ERROR);
+        } finally {
+            log.info("deleteRole end");
+        }
+    }
+
+    @Override
+    @Transactional
+    public Either<ErrorCode, Void> hardDeleteRole(String roleCode) {
+        try {
+            log.info("hardDeleteRole start, roleCode: [{}]", roleCode);
 
             var roleOpt = userRoleRepository.findByRoleCode(roleCode);
             if (roleOpt.isEmpty()) {
@@ -128,14 +154,14 @@ public class UserRoleServiceImpl implements UserRoleService {
             }
 
             userRoleRepository.delete(roleOpt.get());
-            log.info("deleteRole success, roleCode: [{}]", roleCode);
+            log.info("hardDeleteRole success, roleCode: [{}]", roleCode);
 
             return Either.right(null);
         } catch (Exception e) {
-            log.error("deleteRole exception: [{}]", e.getMessage(), e);
+            log.error("hardDeleteRole exception: [{}]", e.getMessage(), e);
             return Either.left(ErrorCode.SERVER_ERROR);
         } finally {
-            log.info("deleteRole end");
+            log.info("hardDeleteRole end");
         }
     }
 

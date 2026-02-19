@@ -21,6 +21,8 @@ public interface UserProfileService {
 
     Either<ErrorCode, Void> deleteUser(String userId);
 
+    Either<ErrorCode, Void> hardDeleteUser(String userId);
+
     Either<ErrorCode, UserProfileResponse> assignRole(String userId, AssignRoleRequestDTO request);
 
     Either<ErrorCode, UserProfileResponse> removeRole(String userId, String roleCode);

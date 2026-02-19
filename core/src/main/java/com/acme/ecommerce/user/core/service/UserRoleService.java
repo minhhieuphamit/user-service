@@ -18,4 +18,6 @@ public interface UserRoleService {
     Either<ErrorCode, UserRoleResponse> updateRole(String roleCode, CreateRoleRequestDTO request);
 
     Either<ErrorCode, Void> deleteRole(String roleCode);
+
+    Either<ErrorCode, Void> hardDeleteRole(String roleCode);
 }

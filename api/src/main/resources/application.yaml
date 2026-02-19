@@ -19,3 +19,16 @@ spring:
 
 server:
   port: ${SERVER_PORT:8081}
+
+app:
+  api-key: ${API_KEY:ecm-project}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /docs/swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: method
+  use-management-port: false
+  default-produces-media-type: application/json

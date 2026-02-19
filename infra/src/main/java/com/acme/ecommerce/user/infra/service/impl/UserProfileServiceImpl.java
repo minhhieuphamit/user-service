@@ -143,7 +143,33 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Transactional
     public Either<ErrorCode, Void> deleteUser(String userId) {
         try {
-            log.info("deleteUser start, userId: [{}]", userId);
+            log.info("deleteUser (soft) start, userId: [{}]", userId);
+
+            var userProfileOpt = userProfileRepository.findByUserId(userId);
+            if (userProfileOpt.isEmpty()) {
+                log.warn("User not found: [userId: {}]", userId);
+                return Either.left(ErrorCode.NOT_FOUND);
+            }
+
+            var userProfile = userProfileOpt.get();
+            userProfile.setStatus(false);
+            userProfileRepository.save(userProfile);
+            log.info("deleteUser (soft) success, userId: [{}]", userId);
+
+            return Either.right(null);
+        } catch (Exception e) {
+            log.error("deleteUser exception: [{}]", e.getMessage(), e);
+            return Either.left(ErrorCode.SERVER_ERROR);
+        } finally {
+            log.info("deleteUser end");
+        }
+    }
+
+    @Override
+    @Transactional
+    public Either<ErrorCode, Void> hardDeleteUser(String userId) {
+        try {
+            log.info("hardDeleteUser start, userId: [{}]", userId);
 
             var userProfileOpt = userProfileRepository.findByUserId(userId);
             if (userProfileOpt.isEmpty()) {
@@ -154,14 +180,14 @@ public class UserProfileServiceImpl implements UserProfileService {
             var userProfile = userProfileOpt.get();
             userProfileRoleRepository.deleteByUserProfileId(userProfile.getId());
             userProfileRepository.delete(userProfile);
-            log.info("deleteUser success, userId: [{}]", userId);
+            log.info("hardDeleteUser success, userId: [{}]", userId);
 
             return Either.right(null);
         } catch (Exception e) {
-            log.error("deleteUser exception: [{}]", e.getMessage(), e);
+            log.error("hardDeleteUser exception: [{}]", e.getMessage(), e);
             return Either.left(ErrorCode.SERVER_ERROR);
         } finally {
-            log.info("deleteUser end");
+            log.info("hardDeleteUser end");
         }
     }
 
