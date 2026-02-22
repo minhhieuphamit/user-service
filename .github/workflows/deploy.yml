@@ -94,6 +94,7 @@ jobs:
               -e DB_URL="${{ secrets.DB_URL }}" \
               -e DB_USERNAME="${{ secrets.DB_USERNAME }}" \
               -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+              -e API_KEY="${{ secrets.API_KEY }}" \
               -e SERVER_PORT=8081 \
               -e SPRING_PROFILES_ACTIVE=${{ steps.vars.outputs.ENV }} \
               ${{ env.DOCKER_IMAGE }}:${{ steps.vars.outputs.TAG }}
