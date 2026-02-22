@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew api:bootJar:*)",
+      "Bash(./gradlew build:*)",
+      "Bash(./gradlew:*)",
+      "Bash(ping:*)",
+      "Bash(nslookup:*)",
+      "Bash(ls:*)"
+    ]
+  }
+}

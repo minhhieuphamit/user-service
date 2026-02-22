@@ -1,13 +1,12 @@
 package com.acme.ecommerce.user.core.service;
 
 import com.acme.ecommerce.user.core.businessexception.ErrorCode;
+import com.acme.ecommerce.user.core.domain.common.PagedResponse;
 import com.acme.ecommerce.user.core.domain.request.AssignRoleRequestDTO;
 import com.acme.ecommerce.user.core.domain.request.CreateUserRequestDTO;
 import com.acme.ecommerce.user.core.domain.request.UpdateUserRequestDTO;
 import com.acme.ecommerce.user.core.domain.response.UserProfileResponse;
 import io.vavr.control.Either;
-
-import java.util.List;
 
 public interface UserProfileService {
 
@@ -15,7 +14,7 @@ public interface UserProfileService {
 
     Either<ErrorCode, UserProfileResponse> getUserByUserId(String userId);
 
-    Either<ErrorCode, List<UserProfileResponse>> getAllUsers();
+    Either<ErrorCode, PagedResponse<UserProfileResponse>> getAllUsers(int page, int size);
 
     Either<ErrorCode, UserProfileResponse> updateUser(String userId, UpdateUserRequestDTO request);
 

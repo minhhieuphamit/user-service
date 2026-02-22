@@ -49,11 +49,13 @@ public class UserProfileController {
     }
 
     @GetMapping
-    @Operation(operationId = "getAllUsers", summary = "Get all users", description = "Retrieve all user profiles")
-    public ResponseEntity<ResponseApi> getAllUsers() {
-        log.info("getAllUsers start");
+    @Operation(operationId = "getAllUsers", summary = "Get all users", description = "Retrieve all user profiles with pagination")
+    public ResponseEntity<ResponseApi> getAllUsers(
+            @Parameter(description = "Page number (0-based)") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Page size") @RequestParam(defaultValue = "10") int size) {
+        log.info("getAllUsers start, page: [{}], size: [{}]", page, size);
         try {
-            return EitherMapper.eitherMapper(userProfileService.getAllUsers());
+            return EitherMapper.eitherMapper(userProfileService.getAllUsers(page, size));
         } finally {
             log.info("getAllUsers end");
         }

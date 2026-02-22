@@ -1,6 +1,7 @@
 package com.acme.ecommerce.user.infra.service.impl;
 
 import com.acme.ecommerce.user.core.businessexception.ErrorCode;
+import com.acme.ecommerce.user.core.domain.common.PagedResponse;
 import com.acme.ecommerce.user.core.domain.entity.UserProfile;
 import com.acme.ecommerce.user.core.domain.entity.UserProfileRole;
 import com.acme.ecommerce.user.core.domain.entity.UserRole;
@@ -15,6 +16,7 @@ import com.acme.ecommerce.user.infra.repository.UserRoleRepository;
 import io.vavr.control.Either;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,16 +86,25 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public Either<ErrorCode, List<UserProfileResponse>> getAllUsers() {
+    public Either<ErrorCode, PagedResponse<UserProfileResponse>> getAllUsers(int page, int size) {
         try {
-            log.info("getAllUsers start");
+            log.info("getAllUsers start, page: [{}], size: [{}]", page, size);
 
-            var users = userProfileRepository.findAll();
-            var responseList = users.stream()
+            var pageable = PageRequest.of(page, size);
+            var userPage = userProfileRepository.findAll(pageable);
+            var responseList = userPage.getContent().stream()
                     .map(user -> toResponse(user, getRoleCodes(user.getId())))
                     .toList();
 
-            return Either.right(responseList);
+            var pagedResponse = PagedResponse.<UserProfileResponse>builder()
+                    .content(responseList)
+                    .page(userPage.getNumber())
+                    .size(userPage.getSize())
+                    .totalElements(userPage.getTotalElements())
+                    .totalPages(userPage.getTotalPages())
+                    .build();
+
+            return Either.right(pagedResponse);
         } catch (Exception e) {
             log.error("getAllUsers exception: [{}]", e.getMessage(), e);
             return Either.left(ErrorCode.SERVER_ERROR);
