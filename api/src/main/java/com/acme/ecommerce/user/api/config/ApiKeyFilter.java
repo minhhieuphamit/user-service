@@ -23,6 +23,7 @@ public class ApiKeyFilter extends OncePerRequestFilter {
             "/v3/api-docs",
             "/docs/swagger-ui",
             "/swagger-ui",
+            "/webjars",
             "/favicon.ico"
     );
 
